@@ -8,43 +8,35 @@ import { MarketingTool } from '../../models/marketing-tool.model';
   standalone: true,
   imports: [CommonModule, ToolCardComponent],
   template: `
-    <section class="mb-10">
+    <section class="mb-6">
       <!-- Category Header -->
-      <div class="flex items-center justify-between mb-6 cursor-pointer group"
+      <div class="flex items-center justify-between py-4 cursor-pointer group"
            (click)="toggleExpanded()">
-        <div class="flex items-center gap-4">
-          <div class="w-12 h-12 rounded-xl flex items-center justify-center text-2xl"
-               [class]="getCategoryGradient(category)">
-            {{ getCategoryIcon(category) }}
+        <div class="flex items-center gap-3">
+          <div class="icon-circle" [ngClass]="getCategoryColorClass(category)">
+            <span class="text-lg">{{ getCategoryIcon(category) }}</span>
           </div>
           <div>
-            <h2 class="text-xl font-bold text-white group-hover:text-purple-300 transition-colors">
+            <h3 class="font-bold text-[#1A253D] group-hover:text-[#FF5722] transition-colors">
               {{ category }}
-            </h2>
-            <p class="text-sm text-gray-500">{{ getCategoryDescription(category) }}</p>
+            </h3>
+            <p class="text-xs text-gray-400">{{ tools.length }} tools available</p>
           </div>
         </div>
-        <div class="flex items-center gap-3">
-          <span class="px-3 py-1.5 text-sm font-medium rounded-full glass-light text-gray-300">
-            {{ tools.length }} tools
-          </span>
-          <button class="w-8 h-8 rounded-lg glass-light flex items-center justify-center text-gray-400 hover:text-white transition-colors">
-            <svg class="w-5 h-5 transition-transform duration-300"
-                 [class.rotate-180]="expanded()"
-                 fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-            </svg>
-          </button>
-        </div>
+        <button class="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-gray-400 hover:bg-[#FF5722] hover:text-white transition-all">
+          <svg class="w-4 h-4 transition-transform duration-300"
+               [class.rotate-180]="expanded()"
+               fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+          </svg>
+        </button>
       </div>
 
-      <!-- Tools Grid -->
+      <!-- Tools List -->
       @if (expanded()) {
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-          @for (tool of tools; track tool.id; let i = $index) {
-            <div class="animate-fade-in-up opacity-0" [style.animation-delay]="(i * 0.05) + 's'">
-              <app-tool-card [tool]="tool" />
-            </div>
+        <div class="bg-gray-50/50 rounded-2xl py-2">
+          @for (tool of tools; track tool.id) {
+            <app-tool-card [tool]="tool" />
           }
         </div>
       }
@@ -75,31 +67,17 @@ export class CategorySectionComponent {
     return icons[category] || '🔧';
   }
 
-  getCategoryGradient(category: string): string {
-    const gradients: Record<string, string> = {
-      'SEO': 'bg-gradient-to-br from-blue-500/20 to-cyan-500/20',
-      'Content': 'bg-gradient-to-br from-purple-500/20 to-violet-500/20',
-      'Social': 'bg-gradient-to-br from-pink-500/20 to-rose-500/20',
-      'Analytics': 'bg-gradient-to-br from-cyan-500/20 to-teal-500/20',
-      'Email': 'bg-gradient-to-br from-amber-500/20 to-yellow-500/20',
-      'Ads': 'bg-gradient-to-br from-red-500/20 to-orange-500/20',
-      'Video': 'bg-gradient-to-br from-rose-500/20 to-pink-500/20',
-      'Design': 'bg-gradient-to-br from-violet-500/20 to-purple-500/20'
+  getCategoryColorClass(category: string): string {
+    const colors: Record<string, string> = {
+      'SEO': 'blue',
+      'Content': 'purple',
+      'Social': 'pink',
+      'Analytics': 'cyan',
+      'Email': 'amber',
+      'Ads': 'orange',
+      'Video': 'pink',
+      'Design': 'purple'
     };
-    return gradients[category] || 'bg-gradient-to-br from-gray-500/20 to-slate-500/20';
-  }
-
-  getCategoryDescription(category: string): string {
-    const descriptions: Record<string, string> = {
-      'SEO': 'Search engine optimization tools',
-      'Content': 'Content creation & writing tools',
-      'Social': 'Social media management tools',
-      'Analytics': 'Data analytics & insights tools',
-      'Email': 'Email marketing automation',
-      'Ads': 'Advertising & PPC management',
-      'Video': 'Video creation & editing tools',
-      'Design': 'Design & visual creation tools'
-    };
-    return descriptions[category] || 'Marketing tools';
+    return colors[category] || 'blue';
   }
 }

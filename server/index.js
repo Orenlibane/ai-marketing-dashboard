@@ -200,6 +200,101 @@ app.post('/api/seed', async (req, res) => {
   }
 });
 
+// In-memory news storage (resets on server restart)
+let cachedNews = [];
+
+// Get cached news
+app.get('/api/news', (req, res) => {
+  res.json(cachedNews);
+});
+
+// Refresh news using Exa API
+app.post('/api/news/refresh', async (req, res) => {
+  const EXA_API_KEY = process.env.EXA_API_KEY;
+  const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY;
+
+  if (!EXA_API_KEY || !ANTHROPIC_API_KEY) {
+    return res.status(500).json({
+      error: 'API keys not configured. Please set EXA_API_KEY and ANTHROPIC_API_KEY environment variables.'
+    });
+  }
+
+  try {
+    // Search for AI and Marketing news using Exa
+    const exaResponse = await fetch('https://api.exa.ai/search', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': EXA_API_KEY
+      },
+      body: JSON.stringify({
+        query: 'AI marketing news trends artificial intelligence digital marketing 2025',
+        type: 'neural',
+        useAutoprompt: true,
+        numResults: 15,
+        contents: {
+          text: { maxCharacters: 500 }
+        }
+      })
+    });
+
+    if (!exaResponse.ok) {
+      throw new Error(`Exa API error: ${exaResponse.status}`);
+    }
+
+    const exaData = await exaResponse.json();
+
+    // Use Claude to parse the results into news items
+    const anthropic = new Anthropic({ apiKey: ANTHROPIC_API_KEY });
+
+    const message = await anthropic.messages.create({
+      model: 'claude-haiku-4-5-20251001',
+      max_tokens: 2000,
+      messages: [{
+        role: 'user',
+        content: `Extract the top 10 most relevant AI and Marketing news from these search results. Return a JSON array with these fields: id (1-10), title (compelling headline), summary (1-2 sentences), sourceUrl, sourceName (publication name), publishedAt (ISO date string, estimate if not available), category (one of: AI, Marketing, Tech, Business).
+
+Search results:
+${JSON.stringify(exaData.results, null, 2)}
+
+Return ONLY valid JSON array, no other text. Make sure titles are engaging and summaries are informative.`
+      }]
+    });
+
+    const newsText = message.content[0].type === 'text' ? message.content[0].text : '';
+    let newsItems = [];
+
+    try {
+      let jsonStr = newsText;
+      const jsonMatch = newsText.match(/```(?:json)?\s*([\s\S]*?)```/);
+      if (jsonMatch) {
+        jsonStr = jsonMatch[1].trim();
+      } else {
+        const arrayMatch = newsText.match(/\[[\s\S]*\]/);
+        if (arrayMatch) {
+          jsonStr = arrayMatch[0];
+        }
+      }
+      newsItems = JSON.parse(jsonStr);
+    } catch (parseError) {
+      console.error('Failed to parse news response:', newsText);
+      return res.status(500).json({ error: 'Failed to parse AI response' });
+    }
+
+    // Cache the news
+    cachedNews = newsItems.slice(0, 10);
+
+    res.json({
+      success: true,
+      message: `Fetched ${cachedNews.length} news items`,
+      news: cachedNews
+    });
+  } catch (error) {
+    console.error('Error fetching news:', error);
+    res.status(500).json({ error: error.message || 'Failed to fetch news' });
+  }
+});
+
 // Health check
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
