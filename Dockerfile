@@ -13,7 +13,6 @@ RUN npm run build
 WORKDIR /app
 COPY server/package*.json ./server/
 COPY server/prisma ./server/prisma/
-COPY server/prisma.config.ts ./server/
 WORKDIR /app/server
 RUN npm ci
 COPY server/ .

@@ -5,9 +5,7 @@ const { PrismaClient } = require('@prisma/client');
 const Anthropic = require('@anthropic-ai/sdk');
 
 const app = express();
-const prisma = new PrismaClient({
-  datasourceUrl: process.env.DATABASE_URL,
-});
+const prisma = new PrismaClient();
 const PORT = process.env.PORT || 3000;
 
 app.use(cors());
