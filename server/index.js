@@ -116,7 +116,7 @@ app.post('/api/fetch-tools', async (req, res) => {
     const anthropic = new Anthropic({ apiKey: ANTHROPIC_API_KEY });
 
     const message = await anthropic.messages.create({
-      model: 'claude-3-5-haiku-20241022',
+      model: 'claude-3-haiku-20240307',
       max_tokens: 2000,
       messages: [{
         role: 'user',
