@@ -3,10 +3,11 @@ const cors = require('cors');
 const path = require('path');
 const { PrismaClient } = require('@prisma/client');
 const Anthropic = require('@anthropic-ai/sdk');
-require('dotenv').config();
 
 const app = express();
-const prisma = new PrismaClient();
+const prisma = new PrismaClient({
+  datasourceUrl: process.env.DATABASE_URL,
+});
 const PORT = process.env.PORT || 3000;
 
 app.use(cors());
