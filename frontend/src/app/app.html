@@ -1,13 +1,24 @@
-<div class="min-h-screen bg-gray-50">
+<div class="min-h-screen relative overflow-hidden">
+  <!-- Animated background elements -->
+  <div class="fixed inset-0 overflow-hidden pointer-events-none">
+    <div class="absolute -top-40 -right-40 w-80 h-80 bg-purple-500/20 rounded-full blur-3xl animate-pulse"></div>
+    <div class="absolute top-1/2 -left-40 w-96 h-96 bg-blue-500/20 rounded-full blur-3xl animate-pulse" style="animation-delay: 1s;"></div>
+    <div class="absolute -bottom-40 right-1/3 w-72 h-72 bg-pink-500/20 rounded-full blur-3xl animate-pulse" style="animation-delay: 2s;"></div>
+  </div>
+
   <!-- Header -->
-  <header class="bg-white border-b border-gray-200 sticky top-0 z-10">
+  <header class="glass sticky top-0 z-50">
     <div class="max-w-7xl mx-auto px-4 py-4 sm:px-6 lg:px-8">
       <div class="flex items-center justify-between">
-        <div class="flex items-center gap-3">
-          <span class="text-3xl">🤖</span>
+        <div class="flex items-center gap-4">
+          <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center animate-float shadow-lg">
+            <svg class="w-7 h-7 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+            </svg>
+          </div>
           <div>
-            <h1 class="text-xl font-bold text-gray-900">AI Marketing Tools Dashboard</h1>
-            <p class="text-sm text-gray-500">Discover and track AI-powered marketing tools</p>
+            <h1 class="text-2xl font-bold gradient-text">AI Marketing Tools</h1>
+            <p class="text-sm text-gray-400">Discover & track AI-powered marketing solutions</p>
           </div>
         </div>
         <app-sync-button />
@@ -16,42 +27,63 @@
   </header>
 
   <!-- Main Content -->
-  <main class="max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
+  <main class="relative z-10 max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
     <!-- Stats Bar -->
     <app-stats-bar />
 
     <!-- Loading State -->
     @if (loading()) {
-      <div class="flex items-center justify-center py-12">
-        <svg class="animate-spin h-8 w-8 text-blue-600" viewBox="0 0 24 24">
-          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"></circle>
-          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-        </svg>
-        <span class="ml-3 text-gray-600">Loading tools...</span>
+      <div class="flex flex-col items-center justify-center py-20">
+        <div class="relative">
+          <div class="w-16 h-16 border-4 border-purple-500/30 rounded-full"></div>
+          <div class="absolute top-0 left-0 w-16 h-16 border-4 border-transparent border-t-purple-500 rounded-full animate-spin"></div>
+        </div>
+        <p class="mt-6 text-gray-400 font-medium">Loading amazing tools...</p>
       </div>
     }
 
     <!-- Categories -->
-    @for (entry of categories(); track entry[0]) {
-      <app-category-section [category]="entry[0]" [tools]="entry[1]" />
+    @for (entry of categories(); track entry[0]; let i = $index) {
+      <div class="animate-fade-in-up opacity-0" [style.animation-delay]="(i * 0.1) + 's'">
+        <app-category-section [category]="entry[0]" [tools]="entry[1]" />
+      </div>
     }
 
     <!-- Empty State -->
     @if (!loading() && tools().length === 0) {
-      <div class="text-center py-12">
-        <span class="text-6xl mb-4 block">🔍</span>
-        <h2 class="text-xl font-semibold text-gray-700 mb-2">No tools found</h2>
-        <p class="text-gray-500">Click "Fetch New Tools" to discover AI marketing tools</p>
+      <div class="glass-card rounded-2xl p-12 text-center max-w-lg mx-auto mt-12">
+        <div class="w-20 h-20 mx-auto mb-6 rounded-full bg-gradient-to-br from-purple-500/20 to-pink-500/20 flex items-center justify-center">
+          <svg class="w-10 h-10 text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+          </svg>
+        </div>
+        <h2 class="text-2xl font-bold text-white mb-3">No tools found</h2>
+        <p class="text-gray-400 mb-6">Click "Fetch New Tools" to discover the latest AI marketing tools</p>
+        <div class="inline-flex items-center gap-2 text-purple-400 text-sm">
+          <svg class="w-4 h-4 animate-bounce" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18" />
+          </svg>
+          Click the button above to get started
+        </div>
       </div>
     }
   </main>
 
   <!-- Footer -->
-  <footer class="bg-white border-t border-gray-200 mt-auto">
+  <footer class="relative z-10 glass mt-12">
     <div class="max-w-7xl mx-auto px-4 py-6 sm:px-6 lg:px-8">
-      <p class="text-center text-sm text-gray-500">
-        AI Marketing Tools Dashboard &copy; 2025
-      </p>
+      <div class="flex flex-col md:flex-row items-center justify-between gap-4">
+        <p class="text-sm text-gray-400">
+          AI Marketing Tools Dashboard &copy; 2025
+        </p>
+        <div class="flex items-center gap-6">
+          <span class="text-xs text-gray-500">Powered by Exa + Claude AI</span>
+          <div class="flex items-center gap-2">
+            <div class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+            <span class="text-xs text-gray-400">Live</span>
+          </div>
+        </div>
+      </div>
     </div>
   </footer>
 </div>
