@@ -102,20 +102,20 @@ interface CategoryFilter {
             </div>
 
             <!-- Performance Trends -->
-            <div class="glass-card-static p-6 lg:col-span-2">
-              <div class="flex items-center justify-between mb-4">
+            <div class="glass-card-static p-6 lg:col-span-2 chart-card">
+              <div class="chart-header">
                 <div>
-                  <h3 class="text-lg font-semibold text-white">Performance Trends</h3>
-                  <p class="text-sm text-white/50">Weekly tool engagement</p>
+                  <h3 class="chart-title">Performance Trends</h3>
+                  <p class="chart-subtitle">Weekly tool engagement</p>
                 </div>
-                <div class="flex items-center gap-2">
-                  <span class="inline-flex items-center gap-1 text-xs text-neon-purple">
-                    <span class="w-2 h-2 rounded-full bg-neon-purple"></span>
-                    This week
-                  </span>
+                <div class="chart-legend">
+                  <span class="w-2 h-2 rounded-full bg-neon-purple"></span>
+                  <span>This week</span>
                 </div>
               </div>
-              <app-area-chart [width]="600" [height]="180" />
+              <div class="chart-wrapper">
+                <app-area-chart [width]="500" [height]="160" />
+              </div>
             </div>
           </div>
         </section>
@@ -431,6 +431,43 @@ interface CategoryFilter {
       background-color: #A855F7;
     }
 
+    .chart-card {
+      overflow: hidden;
+    }
+
+    .chart-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+      gap: 12px;
+    }
+
+    .chart-title {
+      font-size: 1.125rem;
+      font-weight: 600;
+      color: white;
+    }
+
+    .chart-subtitle {
+      font-size: 0.875rem;
+      color: rgba(255, 255, 255, 0.5);
+    }
+
+    .chart-legend {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.75rem;
+      color: #A855F7;
+      flex-shrink: 0;
+    }
+
+    .chart-wrapper {
+      width: 100%;
+      overflow: hidden;
+    }
+
     @keyframes scaleIn {
       from {
         opacity: 0;
@@ -525,6 +562,34 @@ interface CategoryFilter {
       .btn-glass {
         padding: 10px;
         border-radius: 10px;
+      }
+
+      .chart-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+        margin-bottom: 12px;
+      }
+
+      .chart-title {
+        font-size: 1rem;
+      }
+
+      .chart-subtitle {
+        font-size: 0.75rem;
+      }
+
+      .chart-legend {
+        font-size: 0.625rem;
+      }
+
+      .glass-card-static.p-6 {
+        padding: 14px;
+      }
+
+      .tab-pill {
+        font-size: 12px;
+        padding: 6px 12px;
       }
     }
   `]

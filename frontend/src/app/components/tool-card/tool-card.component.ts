@@ -156,6 +156,111 @@ import { MarketingTool } from '../../models/marketing-tool.model';
     .text-neon-purple {
       color: #A855F7;
     }
+
+    .badge-new {
+      padding: 2px 8px;
+      font-size: 10px;
+      font-weight: 600;
+      background: linear-gradient(135deg, #10B981, #059669);
+      color: white;
+      border-radius: 10px;
+      flex-shrink: 0;
+    }
+
+    /* Tablet */
+    @media (max-width: 768px) {
+      .tool-card-glass {
+        padding: 14px 16px;
+        gap: 12px;
+        border-radius: 14px;
+      }
+
+      .tool-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 10px;
+      }
+
+      .tool-icon span {
+        font-size: 1rem;
+      }
+
+      .score-badge {
+        font-size: 14px;
+        padding: 3px 8px;
+      }
+
+      .sentiment-dot {
+        width: 8px;
+        height: 8px;
+      }
+    }
+
+    /* Mobile */
+    @media (max-width: 480px) {
+      .tool-card-glass {
+        padding: 12px;
+        gap: 10px;
+        border-radius: 12px;
+        flex-wrap: wrap;
+      }
+
+      .tool-card-glass:hover {
+        transform: none;
+      }
+
+      .tool-icon {
+        width: 36px;
+        height: 36px;
+        border-radius: 8px;
+      }
+
+      .tool-icon span {
+        font-size: 0.875rem;
+      }
+
+      .flex-1 {
+        flex: 1;
+        min-width: 0;
+      }
+
+      .flex-1 h3 {
+        font-size: 14px;
+      }
+
+      .flex-1 p {
+        font-size: 12px;
+      }
+
+      .badge-new {
+        padding: 2px 6px;
+        font-size: 9px;
+      }
+
+      .tool-card-glass > .flex:last-child {
+        gap: 8px;
+        margin-left: 0;
+      }
+
+      .score-badge {
+        font-size: 12px;
+        padding: 2px 6px;
+        border-radius: 6px;
+      }
+
+      .text-xs {
+        font-size: 10px;
+      }
+
+      .sentiment-dot {
+        display: none;
+      }
+
+      .tool-card-glass svg:last-child {
+        width: 16px;
+        height: 16px;
+      }
+    }
   `]
 })
 export class ToolCardComponent {

@@ -114,13 +114,84 @@ import { MarketingTool } from '../../models/marketing-tool.model';
     .text-neon-purple {
       color: #A855F7;
     }
+
+    /* Tablet */
+    @media (max-width: 768px) {
+      .category-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 10px;
+      }
+
+      .category-icon span {
+        font-size: 1rem;
+      }
+
+      .expand-btn {
+        width: 28px;
+        height: 28px;
+        border-radius: 8px;
+      }
+
+      .expand-btn svg {
+        width: 14px;
+        height: 14px;
+      }
+
+      .tools-list {
+        padding: 6px;
+        gap: 6px;
+        border-radius: 14px;
+      }
+    }
+
+    /* Mobile */
+    @media (max-width: 480px) {
+      section {
+        margin-bottom: 16px;
+      }
+
+      .category-icon {
+        width: 36px;
+        height: 36px;
+        border-radius: 8px;
+      }
+
+      .category-icon span {
+        font-size: 0.875rem;
+      }
+
+      section > div:first-child {
+        padding: 10px 0;
+        gap: 10px;
+      }
+
+      section > div:first-child h3 {
+        font-size: 14px;
+      }
+
+      section > div:first-child p {
+        font-size: 11px;
+      }
+
+      .expand-btn {
+        width: 26px;
+        height: 26px;
+      }
+
+      .tools-list {
+        padding: 4px;
+        gap: 4px;
+        border-radius: 12px;
+      }
+    }
   `]
 })
 export class CategorySectionComponent {
   @Input({ required: true }) category!: string;
   @Input({ required: true }) tools!: MarketingTool[];
 
-  expanded = signal(true);
+  expanded = signal(false);
 
   toggleExpanded(): void {
     this.expanded.update(v => !v);

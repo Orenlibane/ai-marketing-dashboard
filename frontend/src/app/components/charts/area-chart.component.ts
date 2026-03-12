@@ -12,7 +12,7 @@ interface DataPoint {
   imports: [CommonModule],
   template: `
     <div class="area-chart-container">
-      <svg [attr.width]="width" [attr.height]="height" [attr.viewBox]="'0 0 ' + width + ' ' + height">
+      <svg [attr.viewBox]="'0 0 ' + width + ' ' + height" preserveAspectRatio="xMidYMid meet">
         <defs>
           <linearGradient id="areaGradientFill" x1="0%" y1="0%" x2="0%" y2="100%">
             <stop offset="0%" style="stop-color: rgba(168, 85, 247, 0.4)" />
@@ -91,10 +91,15 @@ interface DataPoint {
   styles: [`
     .area-chart-container {
       width: 100%;
+      max-width: 100%;
+      overflow: hidden;
     }
 
     .area-chart-container svg {
+      width: 100%;
+      height: auto;
       overflow: visible;
+      display: block;
     }
 
     .data-point {
@@ -111,6 +116,12 @@ interface DataPoint {
       fill: rgba(255, 255, 255, 0.5);
       font-size: 11px;
       font-weight: 500;
+    }
+
+    @media (max-width: 480px) {
+      .axis-label {
+        font-size: 9px;
+      }
     }
   `]
 })
