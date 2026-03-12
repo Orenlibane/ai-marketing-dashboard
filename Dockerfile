@@ -1,4 +1,4 @@
-FROM node:22.12-alpine AS builder
+FROM node:22-bookworm-slim AS builder
 
 WORKDIR /app
 
@@ -18,7 +18,10 @@ RUN npm ci
 COPY server/ .
 
 # Production image
-FROM node:22.12-alpine
+FROM node:22-bookworm-slim
+
+# Install OpenSSL for Prisma
+RUN apt-get update && apt-get install -y openssl && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 
