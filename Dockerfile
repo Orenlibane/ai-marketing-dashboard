@@ -9,13 +9,15 @@ RUN npm ci
 COPY frontend/ .
 RUN npm run build
 
-# Copy server
+# Copy server - copy prisma schema BEFORE npm ci (for postinstall)
 WORKDIR /app
 COPY server/package*.json ./server/
+COPY server/prisma ./server/prisma/
+COPY server/prisma.config.ts ./server/
 WORKDIR /app/server
 RUN npm ci
 COPY server/ .
-RUN npx prisma generate && npx prisma db push
+RUN npx prisma db push
 
 # Production image
 FROM node:22.12-alpine
@@ -29,7 +31,7 @@ COPY --from=builder /app/frontend/dist/frontend/browser ./server/public
 WORKDIR /app/server
 
 # Install production dependencies only
-RUN npm ci --only=production && npx prisma generate
+RUN npm ci --omit=dev && npx prisma generate
 
 EXPOSE 3000
 
