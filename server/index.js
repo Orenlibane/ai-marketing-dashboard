@@ -189,6 +189,23 @@ app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
+// Ensure database tables exist
+async function ensureDatabaseReady() {
+  const { execSync } = require('child_process');
+  try {
+    console.log('Running prisma db push to ensure tables exist...');
+    execSync('npx prisma db push --skip-generate', {
+      cwd: __dirname,
+      stdio: 'inherit',
+      env: process.env
+    });
+    console.log('Database tables ready');
+  } catch (error) {
+    console.error('Error running prisma db push:', error.message);
+    throw error;
+  }
+}
+
 // Auto-seed database if empty
 async function seedIfEmpty() {
   const count = await prisma.marketingTool.count();
@@ -255,5 +272,6 @@ async function seedIfEmpty() {
 
 app.listen(PORT, async () => {
   console.log(`Server running on port ${PORT}`);
+  await ensureDatabaseReady();
   await seedIfEmpty();
 });

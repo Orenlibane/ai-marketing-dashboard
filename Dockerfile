@@ -36,5 +36,5 @@ RUN npm ci --omit=dev && npx prisma generate
 
 EXPOSE 3000
 
-# Run db push at startup, then start server
-CMD ["sh", "-c", "npx prisma db push && node index.js"]
+# Server handles db push and seeding on startup
+CMD ["node", "index.js"]
