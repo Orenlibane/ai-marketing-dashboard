@@ -1,0 +1,57 @@
+<div class="min-h-screen bg-gray-50">
+  <!-- Header -->
+  <header class="bg-white border-b border-gray-200 sticky top-0 z-10">
+    <div class="max-w-7xl mx-auto px-4 py-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <span class="text-3xl">🤖</span>
+          <div>
+            <h1 class="text-xl font-bold text-gray-900">AI Marketing Tools Dashboard</h1>
+            <p class="text-sm text-gray-500">Discover and track AI-powered marketing tools</p>
+          </div>
+        </div>
+        <app-sync-button />
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
+    <!-- Stats Bar -->
+    <app-stats-bar />
+
+    <!-- Loading State -->
+    @if (loading()) {
+      <div class="flex items-center justify-center py-12">
+        <svg class="animate-spin h-8 w-8 text-blue-600" viewBox="0 0 24 24">
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"></circle>
+          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+        </svg>
+        <span class="ml-3 text-gray-600">Loading tools...</span>
+      </div>
+    }
+
+    <!-- Categories -->
+    @for (entry of categories(); track entry[0]) {
+      <app-category-section [category]="entry[0]" [tools]="entry[1]" />
+    }
+
+    <!-- Empty State -->
+    @if (!loading() && tools().length === 0) {
+      <div class="text-center py-12">
+        <span class="text-6xl mb-4 block">🔍</span>
+        <h2 class="text-xl font-semibold text-gray-700 mb-2">No tools found</h2>
+        <p class="text-gray-500">Click "Fetch New Tools" to discover AI marketing tools</p>
+      </div>
+    }
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-white border-t border-gray-200 mt-auto">
+    <div class="max-w-7xl mx-auto px-4 py-6 sm:px-6 lg:px-8">
+      <p class="text-center text-sm text-gray-500">
+        AI Marketing Tools Dashboard &copy; 2025
+      </p>
+    </div>
+  </footer>
+</div>

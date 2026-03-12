@@ -1,0 +1,20 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model MarketingTool {
+  id              Int      @id @default(autoincrement())
+  name            String   @unique
+  description     String
+  category        String
+  sourceUrl       String
+  dateAdded       DateTime @default(now())
+  isNewLaunch     Boolean  @default(false)
+  usageScore      Int      @default(0)
+  reviewSentiment String   @default("neutral")
+  lastUpdated     DateTime @updatedAt
+}
