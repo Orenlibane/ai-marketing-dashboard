@@ -36,25 +36,25 @@ interface CategoryFilter {
       <!-- Header -->
       <header class="dashboard-header">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div class="flex items-center justify-between py-6">
-            <div class="flex items-center gap-4">
+          <div class="header-content">
+            <div class="header-left">
               <div class="logo-container">
-                <svg class="w-7 h-7 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg class="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 10V3L4 14h7v7l9-11h-7z" />
                 </svg>
               </div>
-              <div>
-                <h1 class="text-2xl font-bold text-white tracking-tight">AI Marketing Hub</h1>
-                <p class="text-sm text-white/50">Discover & analyze AI-powered tools</p>
+              <div class="header-text">
+                <h1 class="header-title">AI Marketing Hub</h1>
+                <p class="header-subtitle">Discover & analyze AI-powered tools</p>
               </div>
             </div>
 
-            <div class="flex items-center gap-3">
+            <div class="header-actions">
               <button (click)="openShareModal()" class="btn-glass">
                 <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
                 </svg>
-                Share
+                <span>Share</span>
               </button>
               @if (!isSharedView()) {
                 <app-sync-button />
@@ -143,25 +143,27 @@ interface CategoryFilter {
               </div>
 
               <!-- Filter Chips -->
-              <div class="flex flex-wrap gap-2 mb-6 pb-4 border-b border-white/10">
-                <button (click)="toggleNewOnly()"
-                        class="filter-chip"
-                        [class.active]="showNewOnly()">
-                  <span>✨</span>
-                  <span>New</span>
-                  <span class="filter-badge">{{ newToolsCount() }}</span>
-                </button>
-
-                <div class="w-px h-8 bg-white/10 mx-1"></div>
-
-                @for (filter of categoryFilters; track filter.name) {
-                  <button (click)="toggleCategory(filter.name)"
+              <div class="filter-scroll-container">
+                <div class="filter-chips">
+                  <button (click)="toggleNewOnly()"
                           class="filter-chip"
-                          [class.active]="isSelected(filter.name)">
-                    <span>{{ filter.icon }}</span>
-                    <span>{{ filter.name }}</span>
+                          [class.active]="showNewOnly()">
+                    <span>✨</span>
+                    <span>New</span>
+                    <span class="filter-badge">{{ newToolsCount() }}</span>
                   </button>
-                }
+
+                  <div class="filter-divider"></div>
+
+                  @for (filter of categoryFilters; track filter.name) {
+                    <button (click)="toggleCategory(filter.name)"
+                            class="filter-chip"
+                            [class.active]="isSelected(filter.name)">
+                      <span>{{ filter.icon }}</span>
+                      <span>{{ filter.name }}</span>
+                    </button>
+                  }
+                </div>
               </div>
 
               <!-- Loading State -->
@@ -232,11 +234,56 @@ interface CategoryFilter {
     .dashboard-container {
       position: relative;
       z-index: 1;
+      padding-bottom: 100px;
     }
 
     .dashboard-header {
       position: relative;
       z-index: 10;
+    }
+
+    .header-content {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px 0;
+      gap: 16px;
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+    }
+
+    .header-text {
+      min-width: 0;
+    }
+
+    .header-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: white;
+      letter-spacing: -0.025em;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .header-subtitle {
+      font-size: 0.875rem;
+      color: rgba(255, 255, 255, 0.5);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-shrink: 0;
     }
 
     .logo-container {
@@ -248,6 +295,7 @@ interface CategoryFilter {
       align-items: center;
       justify-content: center;
       box-shadow: 0 8px 24px -6px rgba(168, 85, 247, 0.5);
+      flex-shrink: 0;
     }
 
     .btn-glass {
@@ -263,12 +311,41 @@ interface CategoryFilter {
       font-weight: 500;
       font-size: 14px;
       transition: all 0.3s ease;
+      white-space: nowrap;
     }
 
     .btn-glass:hover {
       background: rgba(255, 255, 255, 0.1);
       border-color: rgba(255, 255, 255, 0.2);
       transform: translateY(-2px);
+    }
+
+    .filter-scroll-container {
+      margin-bottom: 24px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+    }
+
+    .filter-scroll-container::-webkit-scrollbar {
+      display: none;
+    }
+
+    .filter-chips {
+      display: flex;
+      gap: 8px;
+      min-width: max-content;
+    }
+
+    .filter-divider {
+      width: 1px;
+      height: 32px;
+      background: rgba(255, 255, 255, 0.1);
+      margin: 0 4px;
+      flex-shrink: 0;
     }
 
     .filter-badge {
@@ -333,6 +410,7 @@ interface CategoryFilter {
       border: 1px solid rgba(255, 255, 255, 0.1);
       font-size: 14px;
       color: white;
+      min-width: 0;
     }
 
     .share-input:focus {
@@ -361,6 +439,92 @@ interface CategoryFilter {
       to {
         opacity: 1;
         transform: scale(1);
+      }
+    }
+
+    /* Tablet Responsive */
+    @media (max-width: 1024px) {
+      .header-content {
+        padding: 16px 0;
+      }
+    }
+
+    /* Mobile Responsive */
+    @media (max-width: 768px) {
+      .dashboard-container {
+        padding-bottom: 80px;
+      }
+
+      .header-content {
+        flex-wrap: wrap;
+        padding: 12px 0;
+        gap: 12px;
+      }
+
+      .header-left {
+        gap: 10px;
+      }
+
+      .logo-container {
+        width: 36px;
+        height: 36px;
+        border-radius: 10px;
+      }
+
+      .header-title {
+        font-size: 1.125rem;
+      }
+
+      .header-subtitle {
+        font-size: 0.75rem;
+      }
+
+      .header-actions {
+        gap: 8px;
+      }
+
+      .btn-glass {
+        padding: 8px 12px;
+        font-size: 13px;
+        gap: 6px;
+      }
+
+      .btn-glass svg {
+        width: 16px;
+        height: 16px;
+      }
+
+      .modal-content {
+        padding: 20px;
+        margin: 16px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .header-content {
+        padding: 10px 0;
+      }
+
+      .header-left {
+        flex: 1;
+        min-width: 0;
+      }
+
+      .header-title {
+        font-size: 1rem;
+      }
+
+      .header-subtitle {
+        display: none;
+      }
+
+      .btn-glass span {
+        display: none;
+      }
+
+      .btn-glass {
+        padding: 10px;
+        border-radius: 10px;
       }
     }
   `]

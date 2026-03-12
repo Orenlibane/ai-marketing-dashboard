@@ -186,6 +186,7 @@ interface CategoryTrend {
       max-width: 1280px;
       margin: 0 auto;
       padding: 24px;
+      padding-bottom: 100px;
     }
 
     .refresh-btn {
@@ -440,15 +441,215 @@ interface CategoryTrend {
       color: #f87171;
     }
 
+    /* Tablet */
+    @media (max-width: 1024px) {
+      .insights-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    /* Mobile */
     @media (max-width: 768px) {
-      header {
+      .page-container {
+        padding: 16px;
+        padding-bottom: 80px;
+      }
+
+      .page-container > header {
         flex-direction: column;
-        align-items: flex-start;
+        align-items: stretch;
         gap: 16px;
+        margin-bottom: 24px;
+      }
+
+      .page-container > header h1 {
+        font-size: 1.5rem;
+      }
+
+      .page-container > header p {
+        font-size: 0.875rem;
+      }
+
+      .refresh-btn {
+        padding: 10px 16px;
+        font-size: 13px;
+        justify-content: center;
       }
 
       .insights-grid {
         grid-template-columns: 1fr;
+        gap: 12px;
+      }
+
+      .insight-card {
+        padding: 16px;
+        gap: 12px;
+      }
+
+      .insight-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 12px;
+      }
+
+      .insight-icon span {
+        font-size: 1.25rem;
+      }
+
+      .insight-label {
+        font-size: 12px;
+      }
+
+      .insight-value {
+        font-size: 20px;
+      }
+
+      .insight-change {
+        padding: 4px 8px;
+        font-size: 12px;
+      }
+
+      .glass-card-static.p-6 {
+        padding: 16px;
+      }
+
+      .glass-card-static h3 {
+        font-size: 1rem;
+        margin-bottom: 12px;
+      }
+
+      .summary-content {
+        padding: 12px;
+      }
+
+      .summary-content p {
+        font-size: 13px;
+        line-height: 1.6;
+      }
+
+      .top-tools-list,
+      .category-trends-list {
+        gap: 10px;
+      }
+
+      .top-tool-item,
+      .category-item {
+        padding: 10px 12px;
+        gap: 12px;
+      }
+
+      .rank {
+        width: 28px;
+        height: 28px;
+        font-size: 12px;
+      }
+
+      .tool-name,
+      .category-name {
+        font-size: 13px;
+      }
+
+      .tool-category,
+      .category-stats {
+        font-size: 11px;
+      }
+
+      .score {
+        font-size: 16px;
+      }
+
+      .tool-score {
+        gap: 8px;
+      }
+
+      .trend {
+        font-size: 11px;
+      }
+
+      .trend svg {
+        width: 12px;
+        height: 12px;
+      }
+
+      .category-icon {
+        font-size: 20px;
+      }
+
+      .category-trend {
+        padding: 4px 10px;
+        font-size: 12px;
+      }
+    }
+
+    /* Small Mobile */
+    @media (max-width: 480px) {
+      .page-container {
+        padding: 12px;
+        padding-bottom: 70px;
+      }
+
+      .page-container > header h1 {
+        font-size: 1.25rem;
+      }
+
+      .page-container > header p {
+        font-size: 0.75rem;
+      }
+
+      .refresh-btn {
+        padding: 10px 14px;
+        font-size: 12px;
+        border-radius: 10px;
+      }
+
+      .refresh-btn svg {
+        width: 16px;
+        height: 16px;
+      }
+
+      .insight-card {
+        padding: 14px;
+        gap: 10px;
+      }
+
+      .insight-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 10px;
+      }
+
+      .insight-icon span {
+        font-size: 1rem;
+      }
+
+      .insight-value {
+        font-size: 18px;
+      }
+
+      .glass-card-static.p-6 {
+        padding: 14px;
+      }
+
+      .top-tool-item,
+      .category-item {
+        padding: 10px;
+        gap: 10px;
+        border-radius: 10px;
+      }
+
+      .rank {
+        width: 24px;
+        height: 24px;
+        font-size: 11px;
+        border-radius: 6px;
+      }
+
+      .score {
+        font-size: 14px;
+      }
+
+      .category-icon {
+        font-size: 18px;
       }
     }
   `]

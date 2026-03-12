@@ -83,16 +83,17 @@ import { toSignal } from '@angular/core/rxjs-interop';
       max-width: 1280px;
       margin: 0 auto;
       padding: 24px;
+      padding-bottom: 100px;
     }
 
     .tools-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
-      gap: 24px;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 20px;
     }
 
     .tool-card {
-      padding: 24px;
+      padding: 20px;
       transition: all 0.3s ease;
     }
 
@@ -104,14 +105,14 @@ import { toSignal } from '@angular/core/rxjs-interop';
     .tool-header {
       display: flex;
       align-items: flex-start;
-      gap: 16px;
-      margin-bottom: 16px;
+      gap: 14px;
+      margin-bottom: 14px;
     }
 
     .tool-icon {
-      width: 56px;
-      height: 56px;
-      border-radius: 16px;
+      width: 52px;
+      height: 52px;
+      border-radius: 14px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -124,7 +125,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
     }
 
     .tool-name {
-      font-size: 18px;
+      font-size: 16px;
       font-weight: 700;
       color: white;
       margin-bottom: 4px;
@@ -134,16 +135,16 @@ import { toSignal } from '@angular/core/rxjs-interop';
     }
 
     .tool-category {
-      font-size: 13px;
+      font-size: 12px;
       color: rgba(255, 255, 255, 0.5);
       text-transform: uppercase;
       letter-spacing: 0.5px;
     }
 
     .remove-btn {
-      width: 40px;
-      height: 40px;
-      border-radius: 12px;
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
       background: rgba(239, 68, 68, 0.1);
       color: #f87171;
       display: flex;
@@ -159,11 +160,16 @@ import { toSignal } from '@angular/core/rxjs-interop';
       transform: scale(1.05);
     }
 
+    .remove-btn svg {
+      width: 18px;
+      height: 18px;
+    }
+
     .tool-description {
-      font-size: 14px;
+      font-size: 13px;
       color: rgba(255, 255, 255, 0.6);
       line-height: 1.6;
-      margin-bottom: 16px;
+      margin-bottom: 14px;
       display: -webkit-box;
       -webkit-line-clamp: 2;
       -webkit-box-orient: vertical;
@@ -172,27 +178,27 @@ import { toSignal } from '@angular/core/rxjs-interop';
 
     .tool-stats {
       display: flex;
-      gap: 24px;
-      padding: 16px;
+      gap: 20px;
+      padding: 14px;
       background: rgba(255, 255, 255, 0.03);
-      border-radius: 12px;
-      margin-bottom: 16px;
+      border-radius: 10px;
+      margin-bottom: 14px;
     }
 
     .stat {
       display: flex;
       flex-direction: column;
-      gap: 4px;
+      gap: 2px;
     }
 
     .stat-value {
-      font-size: 18px;
+      font-size: 16px;
       font-weight: 700;
       color: white;
     }
 
     .stat-value.sentiment {
-      font-size: 14px;
+      font-size: 13px;
       text-transform: capitalize;
     }
 
@@ -209,7 +215,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
     }
 
     .stat-label {
-      font-size: 12px;
+      font-size: 11px;
       color: rgba(255, 255, 255, 0.4);
       text-transform: uppercase;
       letter-spacing: 0.5px;
@@ -217,17 +223,17 @@ import { toSignal } from '@angular/core/rxjs-interop';
 
     .tool-actions {
       display: flex;
-      gap: 12px;
+      gap: 10px;
     }
 
     .view-btn {
       flex: 1;
-      padding: 12px 20px;
+      padding: 12px 16px;
       background: linear-gradient(135deg, #A855F7, #3B82F6);
       color: white;
       font-weight: 600;
-      font-size: 14px;
-      border-radius: 12px;
+      font-size: 13px;
+      border-radius: 10px;
       text-align: center;
       text-decoration: none;
       transition: all 0.2s;
@@ -242,12 +248,12 @@ import { toSignal } from '@angular/core/rxjs-interop';
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      padding: 12px 16px;
+      padding: 12px 14px;
       background: rgba(255, 255, 255, 0.05);
       color: rgba(255, 255, 255, 0.7);
       font-weight: 500;
-      font-size: 14px;
-      border-radius: 12px;
+      font-size: 13px;
+      border-radius: 10px;
       text-decoration: none;
       transition: all 0.2s;
     }
@@ -257,9 +263,145 @@ import { toSignal } from '@angular/core/rxjs-interop';
       color: white;
     }
 
-    @media (max-width: 640px) {
+    /* Tablet */
+    @media (max-width: 768px) {
+      .page-container {
+        padding: 16px;
+        padding-bottom: 80px;
+      }
+
+      .page-container header h1 {
+        font-size: 1.5rem;
+      }
+
       .tools-grid {
         grid-template-columns: 1fr;
+        gap: 16px;
+      }
+
+      .tool-card {
+        padding: 16px;
+      }
+    }
+
+    /* Mobile */
+    @media (max-width: 480px) {
+      .page-container {
+        padding: 12px;
+        padding-bottom: 70px;
+      }
+
+      .page-container header {
+        margin-bottom: 20px;
+      }
+
+      .page-container header h1 {
+        font-size: 1.25rem;
+        margin-bottom: 4px;
+      }
+
+      .page-container header p {
+        font-size: 0.75rem;
+      }
+
+      .tool-card {
+        padding: 14px;
+      }
+
+      .tool-header {
+        gap: 12px;
+        margin-bottom: 12px;
+      }
+
+      .tool-icon {
+        width: 44px;
+        height: 44px;
+        border-radius: 12px;
+      }
+
+      .tool-icon span {
+        font-size: 1.25rem;
+      }
+
+      .tool-name {
+        font-size: 14px;
+      }
+
+      .tool-category {
+        font-size: 11px;
+      }
+
+      .remove-btn {
+        width: 32px;
+        height: 32px;
+      }
+
+      .remove-btn svg {
+        width: 16px;
+        height: 16px;
+      }
+
+      .tool-description {
+        font-size: 12px;
+        margin-bottom: 12px;
+      }
+
+      .tool-stats {
+        gap: 16px;
+        padding: 12px;
+        margin-bottom: 12px;
+      }
+
+      .stat-value {
+        font-size: 14px;
+      }
+
+      .stat-label {
+        font-size: 10px;
+      }
+
+      .tool-actions {
+        gap: 8px;
+      }
+
+      .view-btn,
+      .visit-btn {
+        padding: 10px 12px;
+        font-size: 12px;
+        border-radius: 8px;
+      }
+
+      .visit-btn svg {
+        width: 14px;
+        height: 14px;
+      }
+
+      /* Empty state mobile */
+      .glass-card-static.p-12 {
+        padding: 32px 16px;
+      }
+
+      .glass-card-static .w-24 {
+        width: 64px;
+        height: 64px;
+      }
+
+      .glass-card-static .w-12 {
+        width: 32px;
+        height: 32px;
+      }
+
+      .glass-card-static h2 {
+        font-size: 1.25rem;
+      }
+
+      .glass-card-static p {
+        font-size: 0.875rem;
+      }
+
+      .glass-card-static a {
+        padding: 12px 20px;
+        font-size: 14px;
       }
     }
   `]
