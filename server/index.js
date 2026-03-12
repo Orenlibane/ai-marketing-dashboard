@@ -133,9 +133,25 @@ Return ONLY valid JSON array, no other text.`
     let newTools = [];
 
     try {
-      newTools = JSON.parse(toolsText);
-    } catch {
-      return res.status(500).json({ error: 'Failed to parse AI response' });
+      // Try to extract JSON from the response (handle markdown code blocks)
+      let jsonStr = toolsText;
+
+      // Remove markdown code blocks if present
+      const jsonMatch = toolsText.match(/```(?:json)?\s*([\s\S]*?)```/);
+      if (jsonMatch) {
+        jsonStr = jsonMatch[1].trim();
+      } else {
+        // Try to find array in the text
+        const arrayMatch = toolsText.match(/\[[\s\S]*\]/);
+        if (arrayMatch) {
+          jsonStr = arrayMatch[0];
+        }
+      }
+
+      newTools = JSON.parse(jsonStr);
+    } catch (parseError) {
+      console.error('Failed to parse AI response:', toolsText);
+      return res.status(500).json({ error: 'Failed to parse AI response', details: parseError.message });
     }
 
     // Save new tools to database
