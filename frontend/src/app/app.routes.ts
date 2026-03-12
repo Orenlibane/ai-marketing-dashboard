@@ -30,6 +30,10 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/analytics/analytics.component').then(m => m.AnalyticsComponent)
   },
   {
+    path: 'compare',
+    loadComponent: () => import('./pages/compare/compare.component').then(m => m.CompareComponent)
+  },
+  {
     path: '**',
     redirectTo: ''
   }

@@ -384,6 +384,98 @@ Provide a brief, insightful summary highlighting the most important trends and w
   }
 });
 
+// Compare tools using AI
+app.post('/api/tools/compare', async (req, res) => {
+  const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY;
+
+  if (!ANTHROPIC_API_KEY) {
+    return res.status(500).json({
+      error: 'ANTHROPIC_API_KEY not configured.'
+    });
+  }
+
+  const { toolIds } = req.body;
+
+  if (!toolIds || !Array.isArray(toolIds) || toolIds.length < 2) {
+    return res.status(400).json({ error: 'Please provide at least 2 tool IDs to compare' });
+  }
+
+  try {
+    // Fetch tools from database
+    const tools = await prisma.marketingTool.findMany({
+      where: { id: { in: toolIds } }
+    });
+
+    if (tools.length < 2) {
+      return res.status(404).json({ error: 'Could not find enough tools to compare' });
+    }
+
+    const anthropic = new Anthropic({ apiKey: ANTHROPIC_API_KEY });
+
+    const toolsContext = tools.map(tool =>
+      `- ${tool.name} (${tool.category}): ${tool.description}. Usage Score: ${tool.usageScore}/100, Sentiment: ${tool.reviewSentiment}, New Launch: ${tool.isNewLaunch ? 'Yes' : 'No'}`
+    ).join('\n');
+
+    const message = await anthropic.messages.create({
+      model: 'claude-haiku-4-5-20251001',
+      max_tokens: 1500,
+      messages: [{
+        role: 'user',
+        content: `You are a marketing technology analyst. Compare these AI marketing tools and provide insights.
+
+Tools to compare:
+${toolsContext}
+
+Provide a JSON response with this exact structure:
+{
+  "overview": "A 2-3 sentence overview comparing these tools",
+  "toolAnalysis": [
+    {
+      "toolId": <number>,
+      "toolName": "<name>",
+      "pros": ["pro 1", "pro 2", "pro 3"],
+      "cons": ["con 1", "con 2", "con 3"],
+      "bestFor": "Brief description of ideal use case"
+    }
+  ],
+  "recommendation": "A 2-3 sentence recommendation based on the comparison"
+}
+
+Return ONLY valid JSON, no other text or markdown.`
+      }]
+    });
+
+    const responseText = message.content[0].type === 'text' ? message.content[0].text : '';
+    let comparison;
+
+    try {
+      let jsonStr = responseText;
+      const jsonMatch = responseText.match(/```(?:json)?\s*([\s\S]*?)```/);
+      if (jsonMatch) {
+        jsonStr = jsonMatch[1].trim();
+      } else {
+        const objMatch = responseText.match(/\{[\s\S]*\}/);
+        if (objMatch) {
+          jsonStr = objMatch[0];
+        }
+      }
+      comparison = JSON.parse(jsonStr);
+    } catch (parseError) {
+      console.error('Failed to parse comparison response:', responseText);
+      return res.status(500).json({ error: 'Failed to parse AI response' });
+    }
+
+    res.json({
+      success: true,
+      tools,
+      comparison
+    });
+  } catch (error) {
+    console.error('Error comparing tools:', error);
+    res.status(500).json({ error: error.message || 'Failed to compare tools' });
+  }
+});
+
 // Health check
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
