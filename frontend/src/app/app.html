@@ -55,7 +55,7 @@
               </div>
               <div class="flex items-center gap-2">
                 <span class="text-sm text-gray-500">{{ filteredToolsCount() }} tools</span>
-                @if (selectedCategories().size > 0) {
+                @if (hasActiveFilters()) {
                   <button (click)="clearFilters()"
                           class="text-xs text-[#FF5722] hover:underline">
                     Clear filters
@@ -66,6 +66,26 @@
 
             <!-- Category Filter Chips -->
             <div class="flex flex-wrap gap-2 mb-6 pb-4 border-b border-gray-100">
+              <!-- New Filter (Special) -->
+              <button (click)="toggleNewOnly()"
+                      class="inline-flex items-center gap-2 px-4 py-2 rounded-full border text-sm font-medium transition-all"
+                      [ngClass]="showNewOnly() ? 'bg-gradient-to-r from-green-500 to-emerald-500 text-white border-green-500 shadow-lg shadow-green-500/25' : 'bg-white text-gray-600 border-gray-200 hover:border-green-300'">
+                <span>✨</span>
+                <span>New</span>
+                <span class="px-1.5 py-0.5 text-xs rounded-full"
+                      [ngClass]="showNewOnly() ? 'bg-white/20' : 'bg-green-100 text-green-700'">
+                  {{ newToolsCount() }}
+                </span>
+                @if (showNewOnly()) {
+                  <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                  </svg>
+                }
+              </button>
+
+              <div class="w-px h-8 bg-gray-200 mx-1"></div>
+
+              <!-- Category Filters -->
               @for (filter of categoryFilters; track filter.name) {
                 <button (click)="toggleCategory(filter.name)"
                         class="inline-flex items-center gap-2 px-4 py-2 rounded-full border text-sm font-medium transition-all"

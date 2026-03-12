@@ -19,3 +19,16 @@ model MarketingTool {
   reviewSentiment String   @default("neutral")
   lastUpdated     DateTime @updatedAt
 }
+
+model NewsItem {
+  id          Int      @id @default(autoincrement())
+  title       String
+  summary     String
+  sourceUrl   String   @unique
+  sourceName  String
+  publishedAt DateTime
+  category    String
+  imageUrl    String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}

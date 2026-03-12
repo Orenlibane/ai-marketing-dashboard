@@ -2,58 +2,90 @@ import { Component, inject, signal, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ToolsService } from '../../services/tools.service';
+import { HttpClient } from '@angular/common/http';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-news-section',
   standalone: true,
   imports: [CommonModule],
   template: `
-    <div class="card p-6 sm:p-8">
+    <div class="glass-card p-6">
       <!-- Header -->
       <div class="flex items-center justify-between mb-6">
         <div class="flex items-center gap-3">
-          <div class="icon-circle orange">
-            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center">
+            <svg class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />
             </svg>
           </div>
           <div>
-            <h2 class="text-xl font-bold text-[#1A253D]">AI & Marketing News</h2>
-            <p class="text-sm text-gray-500">Top 10 stories this week</p>
+            <h2 class="text-lg font-bold text-white">AI & Marketing News</h2>
+            <p class="text-xs text-white/50">Top stories this week</p>
           </div>
         </div>
 
-        <!-- Refresh Button (only if not shared view) -->
         @if (!isSharedView) {
           <button (click)="refreshNews()"
                   [disabled]="refreshing()"
-                  class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-gray-100 text-gray-600 hover:bg-[#FF5722] hover:text-white transition-all disabled:opacity-50">
-            @if (refreshing()) {
-              <svg class="animate-spin h-4 w-4" viewBox="0 0 24 24">
-                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"></circle>
-                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-              </svg>
-            } @else {
-              <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-              </svg>
-            }
-            <span>Refresh</span>
+                  class="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-white/60 hover:bg-white/10 hover:text-white transition-all disabled:opacity-50">
+            <svg class="w-5 h-5" [class.animate-spin]="refreshing()" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+            </svg>
           </button>
         }
       </div>
 
+      <!-- AI Summary Button -->
+      @if (news().length > 0 && !isSharedView) {
+        <button (click)="generateSummary()"
+                [disabled]="summarizing()"
+                class="btn-summary w-full mb-6">
+          @if (summarizing()) {
+            <div class="loader-container">
+              <div class="loader-dot"></div>
+              <div class="loader-dot"></div>
+              <div class="loader-dot"></div>
+            </div>
+            <span>Generating AI Summary...</span>
+          } @else {
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+            </svg>
+            <span>Get AI Summary</span>
+          }
+        </button>
+      }
+
+      <!-- AI Summary Display -->
+      @if (summary()) {
+        <div class="mb-6 p-4 rounded-xl bg-gradient-to-br from-indigo-500/10 to-purple-500/10 border border-indigo-500/20">
+          <div class="flex items-center gap-2 mb-3">
+            <div class="w-6 h-6 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center">
+              <svg class="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+              </svg>
+            </div>
+            <span class="text-sm font-semibold text-indigo-300">AI Summary</span>
+            <button (click)="summary.set('')" class="ml-auto text-white/40 hover:text-white/60">
+              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+          <p class="text-sm text-white/80 leading-relaxed">{{ summary() }}</p>
+        </div>
+      }
+
       <!-- Loading State -->
       @if (newsLoading()) {
         <div class="space-y-4">
-          @for (i of [1,2,3,4,5]; track i) {
-            <div class="flex items-start gap-4 p-4 rounded-xl bg-gray-50 animate-pulse">
-              <div class="w-16 h-16 rounded-xl bg-gray-200"></div>
-              <div class="flex-1">
-                <div class="h-5 bg-gray-200 rounded w-3/4 mb-2"></div>
-                <div class="h-4 bg-gray-100 rounded w-full mb-2"></div>
-                <div class="h-3 bg-gray-100 rounded w-1/4"></div>
-              </div>
+          @for (i of [1,2,3]; track i) {
+            <div class="animate-slide-up opacity-0" [style.animation-delay]="(i * 0.1) + 's'">
+              <div class="skeleton h-40 mb-3"></div>
+              <div class="skeleton h-5 w-3/4 mb-2"></div>
+              <div class="skeleton h-4 w-full mb-2"></div>
+              <div class="skeleton h-3 w-1/3"></div>
             </div>
           }
         </div>
@@ -61,39 +93,45 @@ import { ToolsService } from '../../services/tools.service';
 
       <!-- News List -->
       @if (!newsLoading() && news().length > 0) {
-        <div class="space-y-3">
+        <div class="space-y-4 max-h-[600px] overflow-y-auto pr-2">
           @for (item of news(); track item.id; let i = $index) {
             <a [href]="item.sourceUrl" target="_blank" rel="noopener noreferrer"
-               class="flex items-start gap-4 p-4 rounded-xl hover:bg-gray-50 transition-colors group cursor-pointer">
-              <!-- Number Badge -->
-              <div class="w-10 h-10 rounded-xl flex items-center justify-center text-white font-bold text-sm flex-shrink-0"
-                   [class]="getNumberBgClass(i)">
-                {{ i + 1 }}
-              </div>
-
-              <!-- Content -->
-              <div class="flex-1 min-w-0">
-                <div class="flex items-start justify-between gap-2">
-                  <h3 class="font-semibold text-[#1A253D] group-hover:text-[#FF5722] transition-colors line-clamp-2">
-                    {{ item.title }}
-                  </h3>
-                  <span class="badge text-xs flex-shrink-0" [ngClass]="getCategoryBadgeClass(item.category)">
-                    {{ item.category }}
-                  </span>
+               class="block group animate-slide-up opacity-0" [style.animation-delay]="(i * 0.1) + 's'">
+              <div class="tool-card">
+                <!-- Image -->
+                <div class="relative mb-4 overflow-hidden rounded-xl">
+                  <div class="news-image flex items-center justify-center"
+                       [style.background]="getGradientForCategory(item.category)">
+                    <span class="text-4xl opacity-50">{{ getCategoryEmoji(item.category) }}</span>
+                  </div>
+                  <div class="absolute top-3 left-3">
+                    <span class="px-3 py-1 rounded-full text-xs font-semibold"
+                          [style.background]="getCategoryColor(item.category)"
+                          style="color: white;">
+                      {{ item.category }}
+                    </span>
+                  </div>
+                  <div class="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <div class="w-8 h-8 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center">
+                      <svg class="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                      </svg>
+                    </div>
+                  </div>
                 </div>
-                <p class="text-sm text-gray-500 mt-1 line-clamp-1">{{ item.summary }}</p>
-                <div class="flex items-center gap-3 mt-2 text-xs text-gray-400">
+
+                <!-- Content -->
+                <h3 class="font-semibold text-white mb-2 line-clamp-2 group-hover:text-indigo-300 transition-colors">
+                  {{ item.title }}
+                </h3>
+                <p class="text-sm text-white/60 mb-3 line-clamp-2">{{ item.summary }}</p>
+
+                <!-- Meta -->
+                <div class="flex items-center justify-between text-xs text-white/40">
                   <span>{{ item.sourceName }}</span>
-                  <span>•</span>
                   <span>{{ formatDate(item.publishedAt) }}</span>
                 </div>
               </div>
-
-              <!-- Arrow -->
-              <svg class="w-5 h-5 text-gray-300 group-hover:text-[#FF5722] group-hover:translate-x-1 transition-all flex-shrink-0 mt-1"
-                   fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-              </svg>
             </a>
           }
         </div>
@@ -102,21 +140,23 @@ import { ToolsService } from '../../services/tools.service';
       <!-- Empty State -->
       @if (!newsLoading() && news().length === 0) {
         <div class="text-center py-12">
-          <div class="w-16 h-16 mx-auto mb-4 rounded-full bg-gray-100 flex items-center justify-center">
-            <svg class="w-8 h-8 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <div class="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-indigo-500/20 to-purple-500/20 flex items-center justify-center">
+            <svg class="w-8 h-8 text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />
             </svg>
           </div>
-          <h3 class="font-semibold text-gray-700 mb-1">No news available</h3>
-          <p class="text-sm text-gray-500">Click refresh to fetch the latest news</p>
+          <p class="text-white/60 text-sm">No news yet</p>
+          @if (!isSharedView) {
+            <p class="text-white/40 text-xs mt-1">Click refresh to fetch latest news</p>
+          }
         </div>
       }
 
       <!-- Toast -->
       @if (message()) {
-        <div class="fixed bottom-6 right-6 z-50 animate-fade-in-up">
-          <div class="flex items-center gap-3 px-4 py-3 rounded-xl shadow-xl"
-               [class]="success() ? 'bg-[#4CAF50]' : 'bg-[#F44336]'">
+        <div class="fixed bottom-6 right-6 z-50 animate-slide-up">
+          <div class="flex items-center gap-3 px-4 py-3 rounded-xl backdrop-blur-xl"
+               [class]="success() ? 'bg-emerald-500/90' : 'bg-red-500/90'">
             <span class="text-sm font-medium text-white">{{ message() }}</span>
           </div>
         </div>
@@ -124,12 +164,6 @@ import { ToolsService } from '../../services/tools.service';
     </div>
   `,
   styles: [`
-    .line-clamp-1 {
-      display: -webkit-box;
-      -webkit-line-clamp: 1;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-    }
     .line-clamp-2 {
       display: -webkit-box;
       -webkit-line-clamp: 2;
@@ -142,11 +176,14 @@ export class NewsSectionComponent {
   @Input() isSharedView = false;
 
   private toolsService = inject(ToolsService);
+  private http = inject(HttpClient);
 
   news = toSignal(this.toolsService.news$, { initialValue: [] });
   newsLoading = toSignal(this.toolsService.newsLoading$, { initialValue: false });
 
   refreshing = signal(false);
+  summarizing = signal(false);
+  summary = signal('');
   message = signal('');
   success = signal(false);
 
@@ -170,25 +207,52 @@ export class NewsSectionComponent {
     });
   }
 
-  getNumberBgClass(index: number): string {
-    const colors = [
-      'bg-gradient-to-br from-[#FF5722] to-[#FF7043]',
-      'bg-gradient-to-br from-[#4CAF50] to-[#66BB6A]',
-      'bg-gradient-to-br from-[#448AFF] to-[#82B1FF]',
-      'bg-gradient-to-br from-[#7C4DFF] to-[#B388FF]',
-      'bg-gradient-to-br from-[#E91E63] to-[#F06292]'
-    ];
-    return colors[index % colors.length];
+  generateSummary(): void {
+    this.summarizing.set(true);
+    const newsItems = this.news();
+
+    this.http.post<{ summary: string }>(`${environment.apiUrl}/api/news/summary`, { news: newsItems }).subscribe({
+      next: (response) => {
+        this.summarizing.set(false);
+        this.summary.set(response.summary);
+      },
+      error: (err) => {
+        this.summarizing.set(false);
+        this.message.set('Failed to generate summary');
+        this.success.set(false);
+        setTimeout(() => this.message.set(''), 3000);
+      }
+    });
   }
 
-  getCategoryBadgeClass(category: string): string {
-    switch (category) {
-      case 'AI': return 'bg-purple-100 text-purple-700';
-      case 'Marketing': return 'bg-orange-100 text-orange-700';
-      case 'Tech': return 'bg-blue-100 text-blue-700';
-      case 'Business': return 'bg-green-100 text-green-700';
-      default: return 'bg-gray-100 text-gray-700';
-    }
+  getCategoryEmoji(category: string): string {
+    const emojis: Record<string, string> = {
+      'AI': '🤖',
+      'Marketing': '📈',
+      'Tech': '💻',
+      'Business': '💼'
+    };
+    return emojis[category] || '📰';
+  }
+
+  getCategoryColor(category: string): string {
+    const colors: Record<string, string> = {
+      'AI': 'linear-gradient(135deg, #8b5cf6, #6366f1)',
+      'Marketing': 'linear-gradient(135deg, #f59e0b, #ef4444)',
+      'Tech': 'linear-gradient(135deg, #3b82f6, #06b6d4)',
+      'Business': 'linear-gradient(135deg, #10b981, #059669)'
+    };
+    return colors[category] || 'linear-gradient(135deg, #6b7280, #4b5563)';
+  }
+
+  getGradientForCategory(category: string): string {
+    const gradients: Record<string, string> = {
+      'AI': 'linear-gradient(135deg, rgba(139, 92, 246, 0.3), rgba(99, 102, 241, 0.3))',
+      'Marketing': 'linear-gradient(135deg, rgba(245, 158, 11, 0.3), rgba(239, 68, 68, 0.3))',
+      'Tech': 'linear-gradient(135deg, rgba(59, 130, 246, 0.3), rgba(6, 182, 212, 0.3))',
+      'Business': 'linear-gradient(135deg, rgba(16, 185, 129, 0.3), rgba(5, 150, 105, 0.3))'
+    };
+    return gradients[category] || 'linear-gradient(135deg, rgba(107, 114, 128, 0.3), rgba(75, 85, 99, 0.3))';
   }
 
   formatDate(dateString: string): string {

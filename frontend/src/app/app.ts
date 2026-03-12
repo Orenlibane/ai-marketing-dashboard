@@ -30,6 +30,9 @@ export class App implements OnInit {
   // Filter state
   selectedCategories = signal<Set<string>>(new Set());
 
+  // Special filter for new launches
+  showNewOnly = signal(false);
+
   // Available category filters
   categoryFilters: CategoryFilter[] = [
     { name: 'SEO', icon: '🔍', color: 'blue' },
@@ -47,15 +50,28 @@ export class App implements OnInit {
   showShareModal = signal(false);
   shareUrl = signal('');
 
+  // Count of new tools
+  newToolsCount = computed(() => {
+    return this.tools().filter(tool => tool.isNewLaunch).length;
+  });
+
   // Filtered categories based on selection
   categories = computed(() => {
     const allTools = this.tools();
     const selected = this.selectedCategories();
+    const newOnly = this.showNewOnly();
 
-    // If no filter selected, show all
-    const filteredTools = selected.size === 0
-      ? allTools
-      : allTools.filter(tool => selected.has(tool.category));
+    let filteredTools = allTools;
+
+    // Filter by new launches
+    if (newOnly) {
+      filteredTools = filteredTools.filter(tool => tool.isNewLaunch);
+    }
+
+    // Filter by category
+    if (selected.size > 0) {
+      filteredTools = filteredTools.filter(tool => selected.has(tool.category));
+    }
 
     const grouped = this.toolsService.getToolsByCategory(filteredTools);
     return Array.from(grouped.entries());
@@ -64,8 +80,19 @@ export class App implements OnInit {
   // Count of filtered tools
   filteredToolsCount = computed(() => {
     const selected = this.selectedCategories();
-    if (selected.size === 0) return this.tools().length;
-    return this.tools().filter(tool => selected.has(tool.category)).length;
+    const newOnly = this.showNewOnly();
+
+    let count = this.tools();
+
+    if (newOnly) {
+      count = count.filter(tool => tool.isNewLaunch);
+    }
+
+    if (selected.size > 0) {
+      count = count.filter(tool => selected.has(tool.category));
+    }
+
+    return count.length;
   });
 
   ngOnInit(): void {
@@ -93,8 +120,17 @@ export class App implements OnInit {
     });
   }
 
+  toggleNewOnly(): void {
+    this.showNewOnly.update(v => !v);
+  }
+
   clearFilters(): void {
     this.selectedCategories.set(new Set());
+    this.showNewOnly.set(false);
+  }
+
+  hasActiveFilters(): boolean {
+    return this.selectedCategories().size > 0 || this.showNewOnly();
   }
 
   isSelected(category: string): boolean {

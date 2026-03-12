@@ -120,7 +120,13 @@ app.post('/api/fetch-tools', async (req, res) => {
       max_tokens: 2000,
       messages: [{
         role: 'user',
-        content: `Extract AI marketing tools from these search results. Return a JSON array of tools with these fields: name, description (brief), category (one of: SEO, Content, Social, Analytics, Email, Ads, Video, Design), sourceUrl, usageScore (estimated 1-100), reviewSentiment (positive/neutral/negative), isNewLaunch (boolean).
+        content: `Extract AI marketing tools from these search results. Return a JSON array of tools with these fields: name, description (brief), category (one of: SEO, Content, Social, Analytics, Email, Ads, Video, Design), sourceUrl, usageScore (estimated 1-100 based on popularity, reviews, and market presence), reviewSentiment (positive/neutral/negative based on user feedback), isNewLaunch (true if launched within the last 6 months).
+
+When estimating usageScore, consider:
+- Market presence and popularity (higher = more popular)
+- User reviews and ratings
+- Feature set and capabilities
+- Recent updates and active development
 
 Search results:
 ${JSON.stringify(exaData.results, null, 2)}
@@ -200,15 +206,21 @@ app.post('/api/seed', async (req, res) => {
   }
 });
 
-// In-memory news storage (resets on server restart)
-let cachedNews = [];
-
-// Get cached news
-app.get('/api/news', (req, res) => {
-  res.json(cachedNews);
+// Get news from database
+app.get('/api/news', async (req, res) => {
+  try {
+    const news = await prisma.newsItem.findMany({
+      orderBy: { publishedAt: 'desc' },
+      take: 10
+    });
+    res.json(news);
+  } catch (error) {
+    console.error('Error fetching news:', error);
+    res.status(500).json({ error: 'Failed to fetch news' });
+  }
 });
 
-// Refresh news using Exa API
+// Refresh news using Exa API and save to database
 app.post('/api/news/refresh', async (req, res) => {
   const EXA_API_KEY = process.env.EXA_API_KEY;
   const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY;
@@ -252,7 +264,7 @@ app.post('/api/news/refresh', async (req, res) => {
       max_tokens: 2000,
       messages: [{
         role: 'user',
-        content: `Extract the top 10 most relevant AI and Marketing news from these search results. Return a JSON array with these fields: id (1-10), title (compelling headline), summary (1-2 sentences), sourceUrl, sourceName (publication name), publishedAt (ISO date string, estimate if not available), category (one of: AI, Marketing, Tech, Business).
+        content: `Extract the top 10 most relevant AI and Marketing news from these search results. Return a JSON array with these fields: title (compelling headline), summary (1-2 sentences), sourceUrl, sourceName (publication name), publishedAt (ISO date string, estimate if not available), category (one of: AI, Marketing, Tech, Business).
 
 Search results:
 ${JSON.stringify(exaData.results, null, 2)}
@@ -281,17 +293,94 @@ Return ONLY valid JSON array, no other text. Make sure titles are engaging and s
       return res.status(500).json({ error: 'Failed to parse AI response' });
     }
 
-    // Cache the news
-    cachedNews = newsItems.slice(0, 10);
+    // Save news to database
+    let added = 0;
+    for (const item of newsItems.slice(0, 10)) {
+      try {
+        await prisma.newsItem.upsert({
+          where: { sourceUrl: item.sourceUrl },
+          update: {
+            title: item.title,
+            summary: item.summary,
+            sourceName: item.sourceName,
+            publishedAt: new Date(item.publishedAt),
+            category: item.category
+          },
+          create: {
+            title: item.title,
+            summary: item.summary,
+            sourceUrl: item.sourceUrl,
+            sourceName: item.sourceName,
+            publishedAt: new Date(item.publishedAt),
+            category: item.category
+          }
+        });
+        added++;
+      } catch (err) {
+        console.error(`Error saving news item:`, err.message);
+      }
+    }
+
+    // Get updated news from database
+    const savedNews = await prisma.newsItem.findMany({
+      orderBy: { publishedAt: 'desc' },
+      take: 10
+    });
 
     res.json({
       success: true,
-      message: `Fetched ${cachedNews.length} news items`,
-      news: cachedNews
+      message: `Added/updated ${added} news items`,
+      news: savedNews
     });
   } catch (error) {
     console.error('Error fetching news:', error);
     res.status(500).json({ error: error.message || 'Failed to fetch news' });
+  }
+});
+
+// Generate AI summary of news items
+app.post('/api/news/summary', async (req, res) => {
+  const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY;
+
+  if (!ANTHROPIC_API_KEY) {
+    return res.status(500).json({
+      error: 'ANTHROPIC_API_KEY not configured.'
+    });
+  }
+
+  const { news } = req.body;
+
+  if (!news || !Array.isArray(news) || news.length === 0) {
+    return res.status(400).json({ error: 'No news items provided' });
+  }
+
+  try {
+    const anthropic = new Anthropic({ apiKey: ANTHROPIC_API_KEY });
+
+    const newsContext = news.map((item, i) =>
+      `${i + 1}. "${item.title}" - ${item.summary}`
+    ).join('\n');
+
+    const message = await anthropic.messages.create({
+      model: 'claude-haiku-4-5-20251001',
+      max_tokens: 500,
+      messages: [{
+        role: 'user',
+        content: `You are a marketing insights analyst. Summarize the key themes and takeaways from these AI & Marketing news items in 2-3 concise sentences. Focus on actionable insights for marketing professionals.
+
+News items:
+${newsContext}
+
+Provide a brief, insightful summary highlighting the most important trends and what they mean for marketers.`
+      }]
+    });
+
+    const summary = message.content[0].type === 'text' ? message.content[0].text : '';
+
+    res.json({ summary });
+  } catch (error) {
+    console.error('Error generating summary:', error);
+    res.status(500).json({ error: error.message || 'Failed to generate summary' });
   }
 });
 
