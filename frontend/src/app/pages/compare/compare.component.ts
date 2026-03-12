@@ -475,6 +475,12 @@ interface ComparisonResult {
 
     .add-tool-dropdown {
       position: relative;
+      z-index: 100;
+    }
+
+    .selection-section {
+      position: relative;
+      z-index: 10;
     }
 
     .add-btn {
@@ -507,7 +513,7 @@ interface ComparisonResult {
       border: 1px solid rgba(255, 255, 255, 0.1);
       border-radius: 16px;
       padding: 12px;
-      z-index: 50;
+      z-index: 1000;
       box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
     }
 
