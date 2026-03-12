@@ -208,27 +208,38 @@ import { toSignal } from '@angular/core/rxjs-interop';
       padding: 24px;
       max-width: 1200px;
       margin: 0 auto;
+      width: 100%;
+      box-sizing: border-box;
     }
 
     .back-btn {
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      color: #6B7280;
+      color: rgba(255, 255, 255, 0.6);
       font-weight: 500;
       margin-bottom: 24px;
-      transition: color 0.2s;
+      padding: 10px 16px;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      transition: all 0.3s ease;
+      text-decoration: none;
     }
 
     .back-btn:hover {
-      color: #FF5722;
+      color: white;
+      background: rgba(255, 255, 255, 0.1);
+      transform: translateX(-4px);
     }
 
     .tool-hero {
-      background: white;
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
       border-radius: 24px;
       padding: 32px;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
       display: flex;
       justify-content: space-between;
       align-items: flex-start;
@@ -239,84 +250,110 @@ import { toSignal } from '@angular/core/rxjs-interop';
     .hero-content {
       display: flex;
       gap: 24px;
+      flex: 1;
+      min-width: 0;
+    }
+
+    .hero-info {
+      flex: 1;
+      min-width: 0;
     }
 
     .tool-icon {
-      width: 100px;
-      height: 100px;
-      border-radius: 24px;
+      width: 88px;
+      height: 88px;
+      border-radius: 20px;
       display: flex;
       align-items: center;
       justify-content: center;
       flex-shrink: 0;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
     }
 
     .tool-name {
-      font-size: 32px;
+      font-size: 28px;
       font-weight: 700;
-      color: #1A253D;
+      color: white;
+      word-break: break-word;
     }
 
     .badge-new {
-      background: linear-gradient(135deg, #4CAF50, #66BB6A);
+      background: linear-gradient(135deg, #10B981, #34D399);
       color: white;
       padding: 4px 12px;
       border-radius: 20px;
-      font-size: 12px;
+      font-size: 11px;
       font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
     }
 
     .tool-category {
       font-size: 14px;
-      color: #6B7280;
-      margin-bottom: 8px;
+      color: rgba(255, 255, 255, 0.5);
+      margin-bottom: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
     }
 
     .tool-description {
-      font-size: 16px;
-      color: #374151;
-      max-width: 500px;
+      font-size: 15px;
+      color: rgba(255, 255, 255, 0.7);
+      line-height: 1.6;
+      max-width: 100%;
     }
 
     .hero-actions {
       display: flex;
-      gap: 12px;
+      gap: 10px;
       flex-shrink: 0;
+      flex-wrap: wrap;
     }
 
     .btn-favorite {
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      padding: 12px 20px;
+      padding: 12px 18px;
       border-radius: 12px;
-      background: #F3F4F6;
-      color: #374151;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: rgba(255, 255, 255, 0.7);
       font-weight: 500;
-      transition: all 0.2s;
+      font-size: 14px;
+      transition: all 0.3s ease;
+      white-space: nowrap;
+    }
+
+    .btn-favorite:hover {
+      background: rgba(255, 255, 255, 0.1);
+      color: white;
     }
 
     .btn-favorite.active {
-      background: #FFF3E0;
-      color: #FF5722;
+      background: rgba(168, 85, 247, 0.2);
+      border-color: rgba(168, 85, 247, 0.4);
+      color: #A855F7;
     }
 
     .btn-primary {
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      padding: 12px 20px;
+      padding: 12px 18px;
       border-radius: 12px;
-      background: linear-gradient(135deg, #FF5722, #FF7043);
+      background: linear-gradient(135deg, #A855F7, #3B82F6);
       color: white;
       font-weight: 600;
-      transition: all 0.2s;
+      font-size: 14px;
+      transition: all 0.3s ease;
       text-decoration: none;
+      white-space: nowrap;
     }
 
     .btn-primary:hover {
       transform: translateY(-2px);
-      box-shadow: 0 8px 20px rgba(255, 87, 34, 0.3);
+      box-shadow: 0 8px 24px rgba(168, 85, 247, 0.4);
     }
 
     .btn-share {
@@ -327,19 +364,32 @@ import { toSignal } from '@angular/core/rxjs-interop';
       align-items: center;
       justify-content: center;
       color: white;
-      transition: all 0.2s;
+      transition: all 0.3s ease;
+      flex-shrink: 0;
     }
 
     .btn-share.twitter {
-      background: #1DA1F2;
+      background: rgba(29, 161, 242, 0.2);
+      border: 1px solid rgba(29, 161, 242, 0.3);
+      color: #1DA1F2;
     }
 
     .btn-share.linkedin {
-      background: #0A66C2;
+      background: rgba(10, 102, 194, 0.2);
+      border: 1px solid rgba(10, 102, 194, 0.3);
+      color: #0A66C2;
     }
 
     .btn-share:hover {
       transform: translateY(-2px);
+    }
+
+    .btn-share.twitter:hover {
+      background: rgba(29, 161, 242, 0.3);
+    }
+
+    .btn-share.linkedin:hover {
+      background: rgba(10, 102, 194, 0.3);
     }
 
     .stats-grid {
@@ -350,10 +400,11 @@ import { toSignal } from '@angular/core/rxjs-interop';
     }
 
     .stat-card {
-      background: white;
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
       border-radius: 16px;
       padding: 20px;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
     }
 
     .stat-icon {
@@ -369,39 +420,44 @@ import { toSignal } from '@angular/core/rxjs-interop';
 
     .stat-icon.blue {
       background: linear-gradient(135deg, #3B82F6, #60A5FA);
+      box-shadow: 0 4px 16px rgba(59, 130, 246, 0.3);
     }
 
     .stat-icon.green {
       background: linear-gradient(135deg, #10B981, #34D399);
+      box-shadow: 0 4px 16px rgba(16, 185, 129, 0.3);
     }
 
     .stat-icon.yellow {
       background: linear-gradient(135deg, #F59E0B, #FBBF24);
+      box-shadow: 0 4px 16px rgba(245, 158, 11, 0.3);
     }
 
     .stat-icon.red {
       background: linear-gradient(135deg, #EF4444, #F87171);
+      box-shadow: 0 4px 16px rgba(239, 68, 68, 0.3);
     }
 
     .stat-icon.purple {
       background: linear-gradient(135deg, #8B5CF6, #A78BFA);
+      box-shadow: 0 4px 16px rgba(139, 92, 246, 0.3);
     }
 
     .stat-value {
       display: block;
       font-size: 24px;
       font-weight: 700;
-      color: #1A253D;
+      color: white;
     }
 
     .stat-label {
       font-size: 13px;
-      color: #6B7280;
+      color: rgba(255, 255, 255, 0.5);
     }
 
     .stat-bar {
       height: 6px;
-      background: #E5E7EB;
+      background: rgba(255, 255, 255, 0.1);
       border-radius: 3px;
       margin-top: 12px;
       overflow: hidden;
@@ -409,7 +465,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 
     .stat-bar-fill {
       height: 100%;
-      background: linear-gradient(135deg, #FF5722, #FF7043);
+      background: linear-gradient(135deg, #A855F7, #3B82F6);
       border-radius: 3px;
       transition: width 0.5s ease;
     }
@@ -422,10 +478,11 @@ import { toSignal } from '@angular/core/rxjs-interop';
     }
 
     .content-card {
-      background: white;
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
       border-radius: 20px;
       padding: 24px;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
     }
 
     .content-card.full-width {
@@ -438,8 +495,12 @@ import { toSignal } from '@angular/core/rxjs-interop';
       gap: 10px;
       font-size: 18px;
       font-weight: 600;
-      color: #1A253D;
+      color: white;
       margin-bottom: 20px;
+    }
+
+    .card-title svg {
+      color: #A855F7;
     }
 
     .feature-list {
@@ -452,29 +513,39 @@ import { toSignal } from '@angular/core/rxjs-interop';
       display: flex;
       align-items: center;
       gap: 10px;
-      color: #374151;
+      color: rgba(255, 255, 255, 0.7);
       font-size: 14px;
+    }
+
+    .feature-item svg {
+      color: #4ade80;
+      flex-shrink: 0;
     }
 
     .pricing-tiers {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 16px;
+      gap: 12px;
     }
 
     .pricing-tier {
-      background: #F9FAFB;
+      background: rgba(255, 255, 255, 0.03);
       border-radius: 16px;
       padding: 20px;
       text-align: center;
       position: relative;
-      border: 2px solid transparent;
-      transition: all 0.2s;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      transition: all 0.3s ease;
+    }
+
+    .pricing-tier:hover {
+      background: rgba(255, 255, 255, 0.05);
+      transform: translateY(-2px);
     }
 
     .pricing-tier.featured {
-      background: linear-gradient(135deg, #FFF7ED, #FFEDD5);
-      border-color: #FF5722;
+      background: linear-gradient(135deg, rgba(168, 85, 247, 0.1), rgba(59, 130, 246, 0.1));
+      border-color: rgba(168, 85, 247, 0.3);
     }
 
     .tier-badge {
@@ -482,7 +553,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
       top: -10px;
       left: 50%;
       transform: translateX(-50%);
-      background: #FF5722;
+      background: linear-gradient(135deg, #A855F7, #3B82F6);
       color: white;
       padding: 4px 12px;
       border-radius: 20px;
@@ -493,7 +564,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
     .tier-name {
       font-size: 16px;
       font-weight: 600;
-      color: #1A253D;
+      color: white;
       margin-bottom: 8px;
     }
 
@@ -502,39 +573,41 @@ import { toSignal } from '@angular/core/rxjs-interop';
     }
 
     .price {
-      font-size: 28px;
+      font-size: 26px;
       font-weight: 700;
-      color: #1A253D;
+      color: white;
     }
 
     .period {
       font-size: 14px;
-      color: #6B7280;
+      color: rgba(255, 255, 255, 0.5);
     }
 
     .tier-desc {
       font-size: 13px;
-      color: #6B7280;
+      color: rgba(255, 255, 255, 0.5);
     }
 
     .integrations-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-      gap: 12px;
+      grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+      gap: 10px;
     }
 
     .integration-card {
       display: flex;
       align-items: center;
       gap: 10px;
-      padding: 12px 16px;
-      background: #F9FAFB;
+      padding: 12px 14px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.08);
       border-radius: 12px;
       transition: all 0.2s;
     }
 
     .integration-card:hover {
-      background: #F3F4F6;
+      background: rgba(255, 255, 255, 0.08);
+      transform: translateY(-2px);
     }
 
     .integration-icon {
@@ -542,9 +615,9 @@ import { toSignal } from '@angular/core/rxjs-interop';
     }
 
     .integration-name {
-      font-size: 13px;
+      font-size: 12px;
       font-weight: 500;
-      color: #374151;
+      color: rgba(255, 255, 255, 0.7);
     }
 
     .similar-section {
@@ -554,13 +627,13 @@ import { toSignal } from '@angular/core/rxjs-interop';
     .section-title {
       font-size: 20px;
       font-weight: 600;
-      color: #1A253D;
+      color: white;
       margin-bottom: 16px;
     }
 
     .similar-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
       gap: 16px;
     }
 
@@ -569,16 +642,18 @@ import { toSignal } from '@angular/core/rxjs-interop';
       align-items: center;
       gap: 16px;
       padding: 16px;
-      background: white;
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
       border-radius: 16px;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
       text-decoration: none;
-      transition: all 0.2s;
+      transition: all 0.3s ease;
     }
 
     .similar-card:hover {
+      background: rgba(255, 255, 255, 0.08);
       transform: translateY(-2px);
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
     }
 
     .similar-icon {
@@ -589,24 +664,34 @@ import { toSignal } from '@angular/core/rxjs-interop';
       align-items: center;
       justify-content: center;
       font-size: 20px;
+      flex-shrink: 0;
+    }
+
+    .similar-info {
+      flex: 1;
+      min-width: 0;
     }
 
     .similar-name {
       font-size: 15px;
       font-weight: 600;
-      color: #1A253D;
+      color: white;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     .similar-category {
       font-size: 13px;
-      color: #6B7280;
+      color: rgba(255, 255, 255, 0.5);
     }
 
     .similar-score {
       margin-left: auto;
       font-size: 18px;
       font-weight: 700;
-      color: #10B981;
+      color: #4ade80;
+      flex-shrink: 0;
     }
 
     .loading-state {
@@ -615,11 +700,53 @@ import { toSignal } from '@angular/core/rxjs-interop';
       align-items: center;
       justify-content: center;
       min-height: 400px;
+      color: rgba(255, 255, 255, 0.5);
+    }
+
+    .loader-container {
+      display: flex;
+      gap: 8px;
+    }
+
+    .loader-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #A855F7, #3B82F6);
+      animation: bounce 1.4s infinite ease-in-out both;
+    }
+
+    .loader-dot:nth-child(1) { animation-delay: -0.32s; }
+    .loader-dot:nth-child(2) { animation-delay: -0.16s; }
+
+    @keyframes bounce {
+      0%, 80%, 100% { transform: scale(0.6); opacity: 0.5; }
+      40% { transform: scale(1); opacity: 1; }
+    }
+
+    /* Responsive Styles */
+    @media (max-width: 1024px) {
+      .tool-hero {
+        flex-direction: column;
+      }
+
+      .hero-actions {
+        width: 100%;
+        justify-content: flex-start;
+      }
+
+      .stats-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
     }
 
     @media (max-width: 768px) {
+      .tool-detail-page {
+        padding: 16px;
+      }
+
       .tool-hero {
-        flex-direction: column;
+        padding: 20px;
       }
 
       .hero-content {
@@ -629,20 +756,42 @@ import { toSignal } from '@angular/core/rxjs-interop';
 
       .tool-icon {
         margin: 0 auto;
+        width: 72px;
+        height: 72px;
+      }
+
+      .tool-name {
+        font-size: 22px;
       }
 
       .hero-actions {
-        width: 100%;
-        flex-wrap: wrap;
         justify-content: center;
+        gap: 8px;
+      }
+
+      .btn-favorite,
+      .btn-primary {
+        padding: 10px 14px;
+        font-size: 13px;
+      }
+
+      .btn-share {
+        width: 40px;
+        height: 40px;
       }
 
       .stats-grid {
         grid-template-columns: 1fr;
+        gap: 12px;
       }
 
       .content-grid {
         grid-template-columns: 1fr;
+        gap: 16px;
+      }
+
+      .content-card {
+        padding: 20px;
       }
 
       .content-card.full-width {
@@ -650,6 +799,44 @@ import { toSignal } from '@angular/core/rxjs-interop';
       }
 
       .pricing-tiers {
+        grid-template-columns: 1fr;
+        gap: 12px;
+      }
+
+      .pricing-tier {
+        padding: 16px;
+      }
+
+      .price {
+        font-size: 22px;
+      }
+
+      .integrations-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .similar-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .hero-actions {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .btn-favorite,
+      .btn-primary {
+        justify-content: center;
+        width: 100%;
+      }
+
+      .hero-actions .btn-share {
+        display: none;
+      }
+
+      .integrations-grid {
         grid-template-columns: 1fr;
       }
     }
