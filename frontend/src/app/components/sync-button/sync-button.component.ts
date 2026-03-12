@@ -10,7 +10,7 @@ import { ToolsService } from '../../services/tools.service';
     <div class="relative">
       <button (click)="fetchTools()"
               [disabled]="loading()"
-              class="btn-primary inline-flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed">
+              class="btn-neon inline-flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed">
         @if (loading()) {
           <svg class="animate-spin h-4 w-4" viewBox="0 0 24 24">
             <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"></circle>
@@ -27,24 +27,69 @@ import { ToolsService } from '../../services/tools.service';
 
       <!-- Toast notification -->
       @if (message()) {
-        <div class="absolute top-full right-0 mt-3 z-50 animate-fade-in-up">
-          <div class="flex items-center gap-3 px-4 py-3 rounded-xl shadow-xl"
-               [class]="success() ? 'bg-[#4CAF50]' : 'bg-[#F44336]'">
+        <div class="toast-container">
+          <div class="toast" [class.success]="success()" [class.error]="!success()">
             @if (success()) {
-              <svg class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
               </svg>
             } @else {
-              <svg class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
               </svg>
             }
-            <span class="text-sm font-medium text-white whitespace-nowrap">{{ message() }}</span>
+            <span>{{ message() }}</span>
           </div>
         </div>
       }
     </div>
-  `
+  `,
+  styles: [`
+    .toast-container {
+      position: absolute;
+      top: 100%;
+      right: 0;
+      margin-top: 12px;
+      z-index: 50;
+      animation: slideUp 0.3s ease;
+    }
+
+    .toast {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 20px;
+      border-radius: 14px;
+      backdrop-filter: blur(12px);
+      font-size: 14px;
+      font-weight: 500;
+      white-space: nowrap;
+      box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.3);
+    }
+
+    .toast.success {
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.9), rgba(5, 150, 105, 0.9));
+      color: white;
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+
+    .toast.error {
+      background: linear-gradient(135deg, rgba(239, 68, 68, 0.9), rgba(220, 38, 38, 0.9));
+      color: white;
+      border: 1px solid rgba(239, 68, 68, 0.3);
+    }
+
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  `]
 })
 export class SyncButtonComponent {
   private toolsService = inject(ToolsService);
