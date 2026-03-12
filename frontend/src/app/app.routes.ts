@@ -19,7 +19,7 @@ export const routes: Routes = [
   },
   {
     path: 'integrations',
-    loadComponent: () => import('./pages/integrations/integrations.component').then(m => m.IntegrationsComponent)
+    loadComponent: () => import('./pages/integrations-map/integrations-map.component').then(m => m.IntegrationsMapComponent)
   },
   {
     path: 'news',
